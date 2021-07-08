@@ -2,7 +2,7 @@ import numpy as np
 
 
 def score_game(game_core):
-    '''Запускаем игру 1000 раз, чтобы узнать, как быстро игра угадывает число'''
+    """Запускаем игру 1000 раз, чтобы узнать, как быстро игра угадывает число"""
     count_ls = []
     np.random.seed(1)  # фиксируем RANDOM SEED, чтобы ваш эксперимент был воспроизводим!
     random_array = np.random.randint(1, 101, size=(1000))
@@ -13,19 +13,24 @@ def score_game(game_core):
     return (score)
 
 
-def game_core_v2(number):
-    '''Сначала устанавливаем любое random число, а потом уменьшаем или увеличиваем его в зависимости от того, больше оно или меньше нужного.
-       Функция принимает загаданное число и возвращает число попыток'''
-    count = 1
-    predict = np.random.randint(1, 101)
-    while number != predict:
+def game_core_v3(number):
+    """Ищет заданное число методом деления пополам.
+       Функция принимает загаданное число и возвращает число попыток"""
+    lower, upper = 1, 100  # диапазон для поиска, включительно
+    count = 0
+    while True:
         count += 1
+        predict = (lower + upper) // 2  # проверяем в центре
+        if predict == number:  # выход из цикла, если угадали
+            break
+        if lower == upper:
+            raise Exception('Загадано число вне диапазона!')
         if number > predict:
-            predict += 1
-        elif number < predict:
-            predict -= 1
-    return (count)  # выход из цикла, если угадали
+            lower = predict + 1  # значение в верхней половине
+        else:
+            upper = predict - 1  # значение в нижней половине
+    return count
 
 
 # Проверяем
-score_game(game_core_v2)
+score_game(game_core_v3)
